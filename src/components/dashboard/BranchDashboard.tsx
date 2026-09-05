@@ -113,7 +113,7 @@ export function BranchDashboard({ branchId }: { branchId: string }) {
           />
         </section>
 
-        <section className="grid gap-3 lg:grid-cols-5">
+        <section className="grid items-start gap-3 lg:grid-cols-5">
           <div className="min-w-0 lg:col-span-3">
             <RepTable rows={reps} query={query} companyConv={kpis.conversion || group.conversion} />
           </div>

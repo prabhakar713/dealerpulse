@@ -21,15 +21,15 @@ export function BranchTable({
       {rows.length === 0 ? (
         <EmptyState title="No branch data" detail="Widen the date range to see branch comparison." />
       ) : (
-        <div className="-mx-1 overflow-x-auto">
-          <table className="min-w-[720px] w-full text-left text-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[36rem] table-fixed text-left text-sm">
             <thead className="text-[11px] uppercase tracking-wide text-muted">
               <tr className="border-b border-line">
-                <th className="py-2 font-medium">Branch</th>
-                <th className="py-2 font-medium">Target pace</th>
-                <th className="py-2 font-medium">Conv.</th>
-                <th className="py-2 font-medium">Open</th>
-                <th className="py-2 font-medium">Why they lose</th>
+                <th className="w-[22%] py-2 font-medium">Branch</th>
+                <th className="w-[24%] py-2 font-medium">Target pace</th>
+                <th className="w-[14%] py-2 font-medium">Conv.</th>
+                <th className="w-[18%] py-2 font-medium">Open</th>
+                <th className="w-[22%] py-2 font-medium">Why they lose</th>
               </tr>
             </thead>
             <tbody>
@@ -46,8 +46,8 @@ export function BranchTable({
                   </td>
                   <td className="py-3 pr-3">
                     <div className="flex items-center gap-2">
-                      <span className="w-10 text-xs tabular-nums">{Math.round(row.unitPct)}%</span>
-                      <span className="h-1.5 w-24 overflow-hidden rounded-full bg-soft">
+                      <span className="w-8 shrink-0 text-xs tabular-nums">{Math.round(row.unitPct)}%</span>
+                      <span className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-soft">
                         <span
                           className={`block h-full ${row.unitPct < 30 ? "bg-bad" : row.unitPct < 60 ? "bg-warn" : "bg-good"}`}
                           style={{ width: `${Math.min(100, row.unitPct)}%` }}
@@ -69,8 +69,10 @@ export function BranchTable({
                     </p>
                   </td>
                   <td className="py-3 text-xs text-muted">
-                    {row.topLostReason ?? "—"}
-                    {row.topLostCount ? ` (${row.topLostCount})` : ""}
+                    <p className="truncate" title={row.topLostReason ?? undefined}>
+                      {row.topLostReason ?? "—"}
+                      {row.topLostCount ? ` (${row.topLostCount})` : ""}
+                    </p>
                     <p>{formatINR(row.deliveredRevenue)} delivered</p>
                   </td>
                 </tr>

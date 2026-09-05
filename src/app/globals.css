@@ -50,6 +50,14 @@ option {
   scrollbar-color: #2a3140 transparent;
 }
 
+.overflow-x-auto {
+  scrollbar-width: thin;
+}
+
+.overflow-x-auto:not(:hover) {
+  scrollbar-color: transparent transparent;
+}
+
 .card {
   background: var(--bg-elev);
   border: 1px solid var(--line);

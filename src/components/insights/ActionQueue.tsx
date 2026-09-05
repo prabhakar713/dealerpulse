@@ -26,7 +26,7 @@ export function ActionQueue({ filters }: { filters: Filters }) {
           detail="No overdue orders, stalled mid-funnel leads, or missed-target branches to act on."
         />
       ) : (
-        <ol className="max-h-[36rem] space-y-3 overflow-y-auto pr-1">
+        <ol className="space-y-3">
           {items.map((item) => (
             <li key={item.id} className="rounded-xl border border-line bg-soft/50 p-3">
               <div className="flex items-start justify-between gap-2">

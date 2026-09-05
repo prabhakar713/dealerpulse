@@ -27,8 +27,8 @@ export function RepTable({
           detail="Branch managers are not given a personal book. Widen the period or pick another branch."
         />
       ) : (
-        <div className="-mx-1 overflow-x-auto">
-          <table className="min-w-[640px] w-full text-left text-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[32rem] table-fixed text-left text-sm">
             <thead className="text-[11px] uppercase tracking-wide text-muted">
               <tr className="border-b border-line">
                 <th className="py-2 font-medium">Rep</th>

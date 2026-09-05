@@ -84,7 +84,7 @@ export function OverviewDashboard() {
           />
         </section>
 
-        <section className="grid gap-3 lg:grid-cols-5">
+        <section className="grid items-start gap-3 lg:grid-cols-5">
           <div className="min-w-0 lg:col-span-3">
             <BranchTable rows={branches} query={query} />
           </div>

@@ -28,8 +28,8 @@ export function LeadTable({
           detail="This is intentional, not a broken page. Widen the period or check another rep."
         />
       ) : (
-        <div className="-mx-1 overflow-x-auto">
-          <table className="min-w-[760px] w-full text-left text-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[36rem] table-fixed text-left text-sm">
             <thead className="text-[11px] uppercase tracking-wide text-muted">
               <tr className="border-b border-line">
                 <th className="py-2 font-medium">Customer</th>

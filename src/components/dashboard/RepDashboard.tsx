@@ -125,7 +125,7 @@ export function RepDashboard({ repId }: { repId: string }) {
               />
             </section>
 
-            <section className="grid gap-3 lg:grid-cols-5">
+            <section className="grid items-start gap-3 lg:grid-cols-5">
               <div className="lg:col-span-3">
                 <LeadTable leads={leads} />
               </div>
