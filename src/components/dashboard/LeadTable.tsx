@@ -1,8 +1,13 @@
+"use client";
+
 import { idleDays, isOverdueOrder, leadDelivery } from "@/lib/aggregations";
 import { formatDate, formatDays, formatINR } from "@/lib/format";
+import { useSort } from "@/lib/sort";
 import type { Lead } from "@/lib/types";
 import { Card } from "../ui/Card";
 import { EmptyState } from "../ui/EmptyState";
+import { ExportCsv } from "../ui/ExportCsv";
+import { SortHeader } from "../ui/SortHeader";
 import { StatusPill } from "../ui/StatusPill";
 
 export function LeadTable({
@@ -12,14 +17,39 @@ export function LeadTable({
   leads: Lead[];
   title?: string;
 }) {
-  const sorted = [...leads].sort((a, b) => idleDays(b) - idleDays(a));
+  const { sorted, spec, toggle } = useSort(leads, {
+    key: "idle",
+    dir: "desc",
+    get: (lead) => idleDays(lead),
+  });
+
   return (
     <Card
       title={title}
       soWhat={
         leads.length
-          ? "Sorted by days since last activity — the top of this list is who to call first."
+          ? spec?.key === "idle"
+            ? "Sorted by days since last activity — the top of this list is who to call first."
+            : "Click a column to change the sort. CSV is the visible list."
           : "Nothing matched this filter."
+      }
+      action={
+        <ExportCsv
+          filename="dealerpulse-leads.csv"
+          rows={sorted.map((lead) => ({
+            Id: lead.id,
+            Customer: lead.customer_name,
+            Phone: lead.phone,
+            Status: lead.status,
+            Source: lead.source,
+            Model: lead.model_interested,
+            Value: lead.deal_value,
+            Created: lead.created_at,
+            "Last activity": lead.last_activity_at,
+            "Idle days": idleDays(lead),
+            "Lost reason": lead.lost_reason ?? "",
+          }))}
+        />
       }
     >
       {leads.length === 0 ? (
@@ -32,11 +62,36 @@ export function LeadTable({
           <table className="w-full min-w-[36rem] table-fixed text-left text-sm">
             <thead className="text-[11px] uppercase tracking-wide text-muted">
               <tr className="border-b border-line">
-                <th className="py-2 font-medium">Customer</th>
-                <th className="py-2 font-medium">Status</th>
-                <th className="py-2 font-medium">Model</th>
-                <th className="py-2 font-medium">Value</th>
-                <th className="py-2 font-medium">Idle</th>
+                <SortHeader
+                  label="Customer"
+                  active={spec?.key === "name"}
+                  dir={spec?.dir ?? "asc"}
+                  onClick={() => toggle("name", (l) => l.customer_name, "asc")}
+                />
+                <SortHeader
+                  label="Status"
+                  active={spec?.key === "status"}
+                  dir={spec?.dir ?? "asc"}
+                  onClick={() => toggle("status", (l) => l.status, "asc")}
+                />
+                <SortHeader
+                  label="Model"
+                  active={spec?.key === "model"}
+                  dir={spec?.dir ?? "asc"}
+                  onClick={() => toggle("model", (l) => l.model_interested, "asc")}
+                />
+                <SortHeader
+                  label="Value"
+                  active={spec?.key === "value"}
+                  dir={spec?.dir ?? "desc"}
+                  onClick={() => toggle("value", (l) => l.deal_value)}
+                />
+                <SortHeader
+                  label="Idle"
+                  active={spec?.key === "idle"}
+                  dir={spec?.dir ?? "desc"}
+                  onClick={() => toggle("idle", (l) => idleDays(l))}
+                />
                 <th className="py-2 font-medium">Contact</th>
               </tr>
             </thead>

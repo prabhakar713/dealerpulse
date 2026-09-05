@@ -4,8 +4,10 @@ import { Bar, CartesianGrid, ComposedChart, Line, ResponsiveContainer, Tooltip, 
 import type { MonthlyPoint } from "@/lib/aggregations";
 import { formatINR, monthLabel } from "@/lib/format";
 import { Card } from "../ui/Card";
+import { useChartTheme } from "../ui/ThemeProvider";
 
 export function TrendChart({ points }: { points: MonthlyPoint[] }) {
+  const tip = useChartTheme();
   const last = points[points.length - 1];
   const soWhat = last
     ? `${monthLabel(last.month)} delivered ${last.units} units vs a ${last.targetUnits} target (${Math.round(last.unitPct)}%). Bars are actuals; the line is the target.`
@@ -22,10 +24,10 @@ export function TrendChart({ points }: { points: MonthlyPoint[] }) {
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={data} margin={{ left: 0, right: 8, top: 8, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="label" tickLine={false} axisLine={false} />
-            <YAxis tickLine={false} axisLine={false} width={36} />
+            <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fill: tip.muted, fontSize: 11 }} />
+            <YAxis tickLine={false} axisLine={false} width={36} tick={{ fill: tip.muted, fontSize: 11 }} />
             <Tooltip
-              contentStyle={{ background: "#12151c", border: "1px solid #262c38", borderRadius: 12 }}
+              contentStyle={{ background: tip.background, border: tip.border, borderRadius: tip.borderRadius, color: tip.color }}
               formatter={(value, name) => {
                 const n = Number(value ?? 0);
                 if (name === "revenue" || name === "targetRevenue") return [formatINR(n), String(name)];

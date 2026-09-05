@@ -17,9 +17,9 @@ I did three open-ended features in depth, not seven shallowly:
 - **Funnel + drop-off reasons** (ever-reached stages + `lost_reason` + last stage before lost)
 - **Target pace** (monthly actuals vs `targets`)
 
-Search, breadcrumbs, and copy-link are navigation, not a fourth feature. A manager who hears “call Uma Hussain” should be able to find her without walking the tree.
+Search, breadcrumbs, copy-link, Light/Dark/Auto, table sort, CSV, and print are chrome, not a fourth insight. A manager who hears “call Uma Hussain” should find her, share the view, or dump the list without walking the tree. I did not add a fake avatar, notification bell, or sidebar — those belong to a multi-product SaaS shell, not a 5-branch scorecard.
 
-I skipped AI summaries, what-if sliders, CSV export, and run-rate forecasts. They would look clever and hide the fact that December already closed and the live book is only 62 deals.
+I skipped AI summaries, what-if sliders, and run-rate forecasts. They would look clever and hide the fact that December already closed and the live book is only 62 deals.
 
 ## Thresholds (not arbitrary)
 
@@ -65,7 +65,8 @@ I skipped AI summaries, what-if sliders, CSV export, and run-rate forecasts. The
 - **Action list is capped to the table height** and scrolls. Stretching the branch table to match twelve alert cards left a black void. On tablet the list stacks in full.
 - **No forecast intervals, no what-if, no LLM blurb.** The honest sentence is: the month is closed, Lakeside is at 5%, and 27 orders have not been delivered (Dec view).
 - **Recharts over custom D3.** Clarity and time. Every chart has a one-line “so what.”
-- **Copy link, not a CSV.** Sharing a filtered URL is what a CEO actually does in Slack. A spreadsheet dump would compete with the narrative.
+- **Copy link is still the share path.** CSV is on the tables for a manager who wants the list in Excel. It dumps the visible rows, not a second set of numbers.
+- **Theme is Light / Dark / Auto.** Auto follows the OS. Choice is stored locally so a Monday standup on a projector can go light without a flash of dark.
 
 ## What I would build next
 
@@ -73,7 +74,6 @@ I skipped AI summaries, what-if sliders, CSV export, and run-rate forecasts. The
 2. A factory-allocation / RTO feed joined to the undelivered orders — the dashboard can name them, it cannot unblock them.
 3. A target-setting workshop. Publishing 218 units against a 52-unit month trains the org to ignore the red bar.
 4. Kill or requalify social leads until they stop converting at 14%.
-5. Host it on Vercel so the submission has a live URL. The app is already a static Next.js client against one JSON file.
 
 ## Stack
 

@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
+import { ThemeProvider } from "@/components/ui/ThemeProvider";
+import { THEME_BOOTSTRAP } from "@/lib/theme-boot";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,6 +23,13 @@ export const metadata: Metadata = {
   description: "Performance dashboard for a 5-branch Toyota group. As of 31 Dec 2025.",
 };
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f3f4f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b0d11" },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,7 +42,8 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body suppressHydrationWarning className="min-h-full bg-bg font-sans text-ink">
-        {children}
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP }} />
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

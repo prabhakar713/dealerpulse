@@ -4,10 +4,12 @@ import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 
 import type { AgingBucket } from "@/lib/aggregations";
 import { formatINR } from "@/lib/format";
 import { Card } from "../ui/Card";
+import { useChartTheme } from "../ui/ThemeProvider";
 
 const COLORS = ["#3ecf8e", "#7dd3c0", "#f5b942", "#fb923c", "#f07167"];
 
 export function AgingChart({ buckets }: { buckets: AgingBucket[] }) {
+  const tip = useChartTheme();
   const hot = buckets.filter((b) => b.min >= 7).reduce((s, b) => s + b.count, 0);
   const soWhat =
     hot > 0
@@ -19,10 +21,10 @@ export function AgingChart({ buckets }: { buckets: AgingBucket[] }) {
       <div className="h-56 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={buckets} margin={{ left: 0, right: 8, top: 8, bottom: 0 }}>
-            <XAxis dataKey="label" tickLine={false} axisLine={false} />
-            <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={28} />
+            <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fill: tip.muted, fontSize: 11 }} />
+            <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={28} tick={{ fill: tip.muted, fontSize: 11 }} />
             <Tooltip
-              contentStyle={{ background: "#12151c", border: "1px solid #262c38", borderRadius: 12 }}
+              contentStyle={{ background: tip.background, border: tip.border, borderRadius: tip.borderRadius, color: tip.color }}
               formatter={(value, _n, item) => {
                 const bucket = item.payload as AgingBucket;
                 return [`${value} leads · ${formatINR(bucket.value)}`, "Open"];

@@ -16,7 +16,7 @@ A CEO or branch manager can open one page and answer three questions: are we hit
 | Branch | `/branch/[id]` | Same story scoped to one rooftop, plus a rep scoreboard |
 | Rep | `/rep/[id]` | Period close rate, **open book** (live deals, not just this month’s intake), actions |
 
-**Viewing as** jumps CEO ↔ branch. **Period** slices history (Dec, Oct–Dec, Jun–Dec, or a single month). Search (`Ctrl+K`) finds a branch, officer, or customer. **Copy link** shares the current view and period.
+**Viewing as** jumps CEO ↔ branch. **Period** slices history (Dec, Oct–Dec, Jun–Dec, or a single month). Search (`Ctrl+K`) finds a branch, officer, or customer. **Copy link** shares the current view and period. **Light / Dark / Auto** follows the OS or a saved choice. Tables sort on click and export CSV. Print is in the header; `?` lists shortcuts.
 
 Branch managers have no assigned leads in the file. `/rep/SR1` (and the other four managers) is an empty state on purpose, with a link to their branch.
 
@@ -49,7 +49,7 @@ Must-haves from `ASSIGNMENT.md`:
 - [x] `DECISIONS.md` — product choices, tradeoffs, next, real numbers
 - [ ] Live Vercel URL (not deployed yet)
 
-Open-ended work that is in the product: lead aging, intake funnel + lost/delay reasons, target pace, branch/rep comparison, header search, copy-link. Skipped: forecast intervals, what-if sliders, LLM blurbs.
+Open-ended work that is in the product: lead aging, intake funnel + lost/delay reasons, target pace, branch/rep comparison, header search, copy-link, Light/Dark/Auto, sortable tables, CSV, print. Skipped: forecast intervals, what-if sliders, LLM blurbs, fake account chrome.
 
 ## Data
 

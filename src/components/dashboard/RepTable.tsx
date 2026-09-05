@@ -1,8 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import type { RepSummary } from "@/lib/aggregations";
 import { formatDays, formatINR, formatPct, initials } from "@/lib/format";
+import { useSort } from "@/lib/sort";
 import { Card } from "../ui/Card";
 import { EmptyState } from "../ui/EmptyState";
+import { ExportCsv } from "../ui/ExportCsv";
+import { SortHeader } from "../ui/SortHeader";
 
 export function RepTable({
   rows,
@@ -14,13 +19,33 @@ export function RepTable({
   companyConv: number;
 }) {
   const officers = rows.filter((r) => r.role === "sales_officer");
+  const { sorted, spec, toggle } = useSort(officers);
   const worst = [...officers].sort((a, b) => a.conversion - b.conversion)[0];
   const soWhat = worst
     ? `${worst.name} is weakest at ${Math.round(worst.conversion)}% vs ${Math.round(companyConv)}% company conversion. Managers have no personal book — skip them.`
     : "No sales officers in this view.";
 
   return (
-    <Card title="Rep scoreboard" soWhat={soWhat}>
+    <Card
+      title="Rep scoreboard"
+      soWhat={soWhat}
+      action={
+        <ExportCsv
+          filename="dealerpulse-reps.csv"
+          rows={sorted.map((row) => ({
+            Rep: row.name,
+            Branch: row.branchName,
+            Delivered: row.delivered,
+            Lost: row.lost,
+            "Close %": Math.round(row.conversion),
+            Revenue: row.deliveredRevenue,
+            "First contact days": row.avgFirstContact ? Number(row.avgFirstContact.toFixed(2)) : "",
+            Stalled: row.stalled,
+            Open: row.active,
+          }))}
+        />
+      }
+    >
       {officers.length === 0 ? (
         <EmptyState
           title="No assigned leads in this range"
@@ -31,15 +56,40 @@ export function RepTable({
           <table className="w-full min-w-[32rem] table-fixed text-left text-sm">
             <thead className="text-[11px] uppercase tracking-wide text-muted">
               <tr className="border-b border-line">
-                <th className="py-2 font-medium">Rep</th>
-                <th className="py-2 font-medium">Delivered</th>
-                <th className="py-2 font-medium">Conv.</th>
-                <th className="py-2 font-medium">1st contact</th>
-                <th className="py-2 font-medium">Needs action</th>
+                <SortHeader
+                  label="Rep"
+                  active={spec?.key === "name"}
+                  dir={spec?.dir ?? "asc"}
+                  onClick={() => toggle("name", (r) => r.name, "asc")}
+                />
+                <SortHeader
+                  label="Delivered"
+                  active={spec?.key === "delivered"}
+                  dir={spec?.dir ?? "desc"}
+                  onClick={() => toggle("delivered", (r) => r.delivered)}
+                />
+                <SortHeader
+                  label="Conv."
+                  active={spec?.key === "conv"}
+                  dir={spec?.dir ?? "asc"}
+                  onClick={() => toggle("conv", (r) => r.conversion, "asc")}
+                />
+                <SortHeader
+                  label="1st contact"
+                  active={spec?.key === "fc"}
+                  dir={spec?.dir ?? "asc"}
+                  onClick={() => toggle("fc", (r) => r.avgFirstContact ?? 99, "asc")}
+                />
+                <SortHeader
+                  label="Needs action"
+                  active={spec?.key === "stalled"}
+                  dir={spec?.dir ?? "desc"}
+                  onClick={() => toggle("stalled", (r) => r.stalled)}
+                />
               </tr>
             </thead>
             <tbody>
-              {officers.map((row) => (
+              {sorted.map((row) => (
                 <tr key={row.id} className="border-b border-line/70 last:border-0">
                   <td className="py-3 pr-3">
                     <Link href={`/rep/${row.id}${query}`} className="flex items-center gap-2 hover:text-accent">

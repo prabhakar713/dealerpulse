@@ -7,6 +7,9 @@ import { dataset, getBranch, getRep } from "@/lib/data";
 import { RANGE_OPTIONS } from "@/lib/query";
 import { CommandSearch } from "./CommandSearch";
 import { CopyLink } from "./CopyLink";
+import { PrintButton } from "./PrintButton";
+import { ShortcutsHelp } from "./ShortcutsHelp";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function AppShell({
   children,
@@ -37,7 +40,7 @@ export function AppShell({
   }
 
   return (
-    <div className="flex min-h-dvh flex-col bg-bg text-ink" suppressHydrationWarning>
+    <div className="flex min-h-dvh flex-col bg-bg text-ink">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-lg focus:bg-accent focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-bg"
@@ -90,7 +93,11 @@ export function AppShell({
                 ))}
               </select>
             </label>
-            <CopyLink />
+            <div className="flex items-center gap-2">
+              <CopyLink />
+              <PrintButton />
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </header>
@@ -120,6 +127,7 @@ export function AppShell({
         <main id="main" className="py-5 sm:py-6">
           {children}
         </main>
+        <ShortcutsHelp />
       </div>
 
       <footer className="mt-auto border-t border-line/80 print:hidden">
@@ -128,7 +136,10 @@ export function AppShell({
             Jun–Dec 2025 book · {dataset.leads.length} leads · {dataset.branches.length} branches ·{" "}
             {dataset.sales_reps.length} people
           </p>
-          <p>Clock is 31 Dec 2025. Period filters history; the live queue is the open book.</p>
+          <p>
+            Clock is 31 Dec 2025. Period filters history; the live queue is the open book. Press{" "}
+            <kbd className="rounded border border-line px-1">?</kbd> for shortcuts.
+          </p>
         </div>
       </footer>
     </div>
