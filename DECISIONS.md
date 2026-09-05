@@ -17,7 +17,9 @@ I did three open-ended features in depth, not seven shallowly:
 - **Funnel + drop-off reasons** (ever-reached stages + `lost_reason` + last stage before lost)
 - **Target pace** (monthly actuals vs `targets`)
 
-I skipped AI summaries, what-if sliders, and export. They would look clever and hide the fact that December already closed and the live book is only 62 deals.
+Search, breadcrumbs, and copy-link are navigation, not a fourth feature. A manager who hears “call Uma Hussain” should be able to find her without walking the tree.
+
+I skipped AI summaries, what-if sliders, CSV export, and run-rate forecasts. They would look clever and hide the fact that December already closed and the live book is only 62 deals.
 
 ## Thresholds (not arbitrary)
 
@@ -57,16 +59,21 @@ I skipped AI summaries, what-if sliders, and export. They would look clever and 
 - **JSON in the client bundle, not a database.** 510 rows. An API + DB would add latency and no insight.
 - **Default period is Dec 2025, not YTD.** The assignment asked for “this month’s vital signs.” YTD / Oct–Dec are one control away.
 - **Two clocks.** Period filters history (units vs target, lost reasons, intake funnel). The action queue, aging, and open pipeline always use the live book as of 31 Dec 2025. A June order sitting 195 days is still a December problem.
+- **Rep scorecards use the same two clocks.** Close rate and the intake funnel are period history. The table is the **open book**. Suresh Kulkarni (`/rep/SR3?range=2025-12`) created nothing in December, but Uma Hussain’s Glanza has been sitting 92 days — that page must show Uma, not “no leads in this range.”
 - **Close rate = won / (won + lost) in the period**, not “leads created this month that later delivered.” December intake converting at 1% next to “52 units delivered” would lie to the CEO.
-- **No forecast intervals, no what-if, no LLM blurb.** The honest sentence is: the month is closed, Lakeside is at 5%, and 38 orders have not been delivered.
+- **Source card uses the full book through period end**, not a tiny Dec-intake sample. Walk-in 46% vs social 14% is the operating fact; six December walk-ins are not.
+- **Action list is capped to the table height** and scrolls. Stretching the branch table to match twelve alert cards left a black void. On tablet the list stacks in full.
+- **No forecast intervals, no what-if, no LLM blurb.** The honest sentence is: the month is closed, Lakeside is at 5%, and 27 orders have not been delivered (Dec view).
 - **Recharts over custom D3.** Clarity and time. Every chart has a one-line “so what.”
+- **Copy link, not a CSV.** Sharing a filtered URL is what a CEO actually does in Slack. A spreadsheet dump would compete with the narrative.
 
 ## What I would build next
 
 1. A write-back so a manager can log “called / not answering” and clear the queue.
-2. A factory-allocation / RTO feed joined to the 38 undelivered orders — the dashboard can name them, it cannot unblock them.
+2. A factory-allocation / RTO feed joined to the undelivered orders — the dashboard can name them, it cannot unblock them.
 3. A target-setting workshop. Publishing 218 units against a 52-unit month trains the org to ignore the red bar.
 4. Kill or requalify social leads until they stop converting at 14%.
+5. Host it on Vercel so the submission has a live URL. The app is already a static Next.js client against one JSON file.
 
 ## Stack
 
