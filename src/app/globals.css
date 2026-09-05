@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0b0d11;
+  --bg-elev: #12151c;
+  --bg-soft: #181c25;
+  --line: #262c38;
+  --text: #eef1f6;
+  --muted: #8b93a7;
+  --good: #3ecf8e;
+  --warn: #f5b942;
+  --bad: #f07167;
+  --accent: #7dd3c0;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-elev: var(--bg-elev);
+  --color-soft: var(--bg-soft);
+  --color-line: var(--line);
+  --color-ink: var(--text);
+  --color-muted: var(--muted);
+  --color-good: var(--good);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2a3140 transparent;
+}
+
+.card {
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: #262c38;
+}
+
+.recharts-text {
+  fill: #8b93a7;
+  font-size: 11px;
+}
