@@ -7,8 +7,9 @@ import {
   companyKpis,
   filterLeads,
   firstContactStats,
+  liveLeads,
+  lostInRange,
   lostReasons,
-  repSummaries,
 } from "@/lib/aggregations";
 import { dataset, getBranch, getRep } from "@/lib/data";
 import { formatDays, formatINR, formatPct } from "@/lib/format";
@@ -32,15 +33,18 @@ export function RepDashboard({ repId }: { repId: string }) {
   );
   const query = `?range=${rangeParam(range)}`;
 
-  const me = useMemo(() => repSummaries(dataset, filters)[0], [filters]);
+  const kpis = useMemo(() => companyKpis(dataset, filters), [filters]);
   const branchKpis = useMemo(
     () => (rep ? companyKpis(dataset, { range, branchId: rep.branch_id }) : null),
     [range, rep],
   );
   const groupKpis = useMemo(() => companyKpis(dataset, { range }), [range]);
-  const leads = useMemo(() => filterLeads(dataset, filters), [filters]);
-  const lost = useMemo(() => lostReasons(leads), [leads]);
-  const fc = useMemo(() => firstContactStats(leads), [leads]);
+  const intake = useMemo(() => filterLeads(dataset, filters), [filters]);
+  const openBook = useMemo(() => liveLeads(dataset, filters), [filters]);
+  const periodLost = useMemo(() => lostInRange(dataset, filters), [filters]);
+  const lost = useMemo(() => lostReasons(periodLost), [periodLost]);
+  const fc = useMemo(() => firstContactStats(intake), [intake]);
+  const closed = kpis.delivered + kpis.lost;
 
   if (!rep || !branch) {
     return (
@@ -64,18 +68,10 @@ export function RepDashboard({ repId }: { repId: string }) {
     <AppShell scopeBranchId={rep.branch_id} rangeValue={rangeParam(range)}>
       <div className="space-y-4">
         <div>
-          <div className="flex flex-wrap gap-3 text-xs text-muted">
-            <Link href={`/${query}`} className="hover:text-ink">
-              Company
-            </Link>
-            <span>/</span>
-            <Link href={`/branch/${rep.branch_id}${query}`} className="hover:text-ink">
-              {branch.name}
-            </Link>
-          </div>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight">
+          <h1 className="text-2xl font-semibold tracking-tight">
             {rep.name}
             <span className="ml-2 text-base font-normal capitalize text-muted">
+              {" "}
               {rep.role.replace("_", " ")}
             </span>
           </h1>
@@ -99,42 +95,48 @@ export function RepDashboard({ repId }: { repId: string }) {
             <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
               <KpiCard
                 label="Conversion"
-                value={formatPct(me?.conversion ?? 0)}
-                hint={`Branch ${formatPct(branchKpis?.conversion ?? 0)} · Group ${formatPct(groupKpis.conversion)}`}
-                tone={(me?.conversion ?? 0) + 8 < (branchKpis?.conversion ?? 0) ? "bad" : "good"}
+                value={closed ? formatPct(kpis.conversion) : "—"}
+                hint={
+                  closed
+                    ? `${kpis.delivered} won · ${kpis.lost} lost in ${range.label} · branch ${formatPct(branchKpis?.conversion ?? 0)} · group ${formatPct(groupKpis.conversion)}`
+                    : `No closed deals in ${range.label} · branch ${formatPct(branchKpis?.conversion ?? 0)}`
+                }
+                tone={!closed ? "neutral" : kpis.conversion + 8 < (branchKpis?.conversion ?? 0) ? "bad" : "good"}
               />
               <KpiCard
                 label="Delivered"
-                value={String(me?.delivered ?? 0)}
-                hint={`${formatINR(me?.deliveredRevenue ?? 0)} · ${me?.leads ?? 0} leads in range`}
+                value={String(kpis.delivered)}
+                hint={`${formatINR(kpis.deliveredRevenue)} closed in ${range.label}`}
               />
               <KpiCard
                 label="First contact"
                 value={fc.n ? formatDays(fc.avg) : "—"}
                 hint={
                   fc.n
-                    ? `Median ${formatDays(fc.median)} · branch ${formatDays(branchKpis?.avgFirstContact ?? 0)}`
-                    : "No contacted leads in range"
+                    ? `Median ${formatDays(fc.median)} on ${range.label} intake · branch ${formatDays(branchKpis?.avgFirstContact ?? 0)}`
+                    : `No ${range.label} intake to time`
                 }
               />
               <KpiCard
                 label="Needs a call"
-                value={String(me?.stalled ?? 0)}
-                hint={`${me?.active ?? 0} still open · ${me?.lost ?? 0} lost`}
-                tone={(me?.stalled ?? 0) > 0 ? "warn" : "good"}
+                value={String(kpis.overdueOrders + kpis.stalledMidFunnel)}
+                hint={`${kpis.active} still open · ${kpis.overdueOrders} overdue orders`}
+                tone={kpis.overdueOrders + kpis.stalledMidFunnel > 0 ? "warn" : "good"}
               />
             </section>
 
-            <section className="grid items-start gap-3 lg:grid-cols-5">
-              <div className="lg:col-span-3">
-                <LeadTable leads={leads} />
+            <section className="grid gap-3 lg:grid-cols-5 lg:items-stretch">
+              <div className="min-w-0 lg:col-span-3">
+                <LeadTable leads={openBook} title="Open book" />
               </div>
-              <div className="lg:col-span-2">
-                <ActionQueue filters={filters} />
+              <div className="min-w-0 lg:relative lg:col-span-2 lg:min-h-0">
+                <div className="lg:absolute lg:inset-0 lg:overflow-hidden">
+                  <ActionQueue filters={filters} />
+                </div>
               </div>
             </section>
 
-            <FunnelChart leads={leads} periodLabel={range.label} />
+            <FunnelChart leads={intake} periodLabel={range.label} />
 
             <ReasonBars
               title="This rep's lost reasons"

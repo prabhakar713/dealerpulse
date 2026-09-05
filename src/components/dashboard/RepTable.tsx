@@ -57,8 +57,10 @@ export function RepTable({
                     <p className="text-[11px] text-muted">{formatINR(row.deliveredRevenue)}</p>
                   </td>
                   <td className={`py-3 pr-3 tabular-nums ${row.conversion < companyConv / 2 ? "text-bad" : ""}`}>
-                    {formatPct(row.conversion)}
-                    <p className="text-[11px] text-muted">{row.leads} leads</p>
+                    {row.delivered + row.lost ? formatPct(row.conversion) : "—"}
+                    <p className="text-[11px] text-muted">
+                      {row.delivered} won · {row.lost} lost
+                    </p>
                   </td>
                   <td className="py-3 pr-3 text-xs text-muted">
                     {row.avgFirstContact ? formatDays(row.avgFirstContact) : "—"}

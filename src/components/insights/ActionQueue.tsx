@@ -19,14 +19,18 @@ export function ActionQueue({ filters }: { filters: Filters }) {
     : "No stalled leads or missed-target branches in this view.";
 
   return (
-    <Card title="Do this today" soWhat={soWhat}>
+    <Card
+      title="Do this today"
+      soWhat={soWhat}
+      className="max-lg:h-auto lg:flex lg:h-full lg:min-h-0 lg:flex-col lg:overflow-hidden"
+    >
       {items.length === 0 ? (
         <EmptyState
           title="Queue is clear"
           detail="No overdue orders, stalled mid-funnel leads, or missed-target branches to act on."
         />
       ) : (
-        <ol className="space-y-3">
+        <ol className="space-y-3 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:overscroll-contain lg:pr-1">
           {items.map((item) => (
             <li key={item.id} className="rounded-xl border border-line bg-soft/50 p-3">
               <div className="flex items-start justify-between gap-2">

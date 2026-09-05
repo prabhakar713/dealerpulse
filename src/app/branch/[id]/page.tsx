@@ -1,13 +1,7 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { use } from "react";
-import { DashboardSkeleton } from "@/components/ui/Skeleton";
-
-const BranchDashboard = dynamic(
-  () => import("@/components/dashboard/BranchDashboard").then((m) => m.BranchDashboard),
-  { ssr: false, loading: () => <DashboardSkeleton /> },
-);
+import { BranchDashboard } from "@/components/dashboard/BranchDashboard";
 
 export default function BranchPage({
   params,

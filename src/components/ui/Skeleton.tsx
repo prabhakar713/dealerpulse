@@ -2,6 +2,7 @@ export function DashboardSkeleton() {
   return (
     <div className="min-h-full bg-bg px-4 py-6 sm:px-6">
       <div className="mx-auto max-w-7xl animate-pulse space-y-4">
+        <p className="text-sm text-muted">Loading scorecard…</p>
         <div className="h-20 rounded-2xl bg-elev" />
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (

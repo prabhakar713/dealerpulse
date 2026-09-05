@@ -1,13 +1,7 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { use } from "react";
-import { DashboardSkeleton } from "@/components/ui/Skeleton";
-
-const RepDashboard = dynamic(
-  () => import("@/components/dashboard/RepDashboard").then((m) => m.RepDashboard),
-  { ssr: false, loading: () => <DashboardSkeleton /> },
-);
+import { RepDashboard } from "@/components/dashboard/RepDashboard";
 
 export default function RepPage({
   params,

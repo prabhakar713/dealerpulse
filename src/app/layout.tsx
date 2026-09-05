@@ -14,8 +14,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DealerPulse — Dealership performance",
-  description: "Real-time performance dashboard for a 5-branch Toyota group.",
+  title: {
+    default: "DealerPulse — Dealership performance",
+    template: "%s · DealerPulse",
+  },
+  description: "Performance dashboard for a 5-branch Toyota group. As of 31 Dec 2025.",
 };
 
 export default function RootLayout({
@@ -29,7 +32,9 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-bg font-sans text-ink">{children}</body>
+      <body suppressHydrationWarning className="min-h-full bg-bg font-sans text-ink">
+        {children}
+      </body>
     </html>
   );
 }

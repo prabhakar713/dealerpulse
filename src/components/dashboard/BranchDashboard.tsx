@@ -72,10 +72,7 @@ export function BranchDashboard({ branchId }: { branchId: string }) {
       <div className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <Link href={`/${query}`} className="text-xs text-muted hover:text-ink">
-              ← Company overview
-            </Link>
-            <h1 className="mt-1 text-2xl font-semibold tracking-tight">
+            <h1 className="text-2xl font-semibold tracking-tight">
               {branch.name}
               <span className="ml-2 text-base font-normal text-muted">{branch.city}</span>
             </h1>
@@ -113,12 +110,14 @@ export function BranchDashboard({ branchId }: { branchId: string }) {
           />
         </section>
 
-        <section className="grid items-start gap-3 lg:grid-cols-5">
+        <section className="grid gap-3 lg:grid-cols-5 lg:items-stretch">
           <div className="min-w-0 lg:col-span-3">
             <RepTable rows={reps} query={query} companyConv={kpis.conversion || group.conversion} />
           </div>
-          <div className="min-w-0 lg:col-span-2">
-            <ActionQueue filters={filters} />
+          <div className="min-w-0 lg:relative lg:col-span-2 lg:min-h-0">
+            <div className="lg:absolute lg:inset-0 lg:overflow-hidden">
+              <ActionQueue filters={filters} />
+            </div>
           </div>
         </section>
 

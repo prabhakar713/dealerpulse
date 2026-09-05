@@ -366,26 +366,30 @@ export function repSummaries(data: DealershipData, filters: Filters): RepSummary
 
   return reps
     .map((rep) => {
-      const leads = filterLeads(data, { ...filters, repId: rep.id, branchId: rep.branch_id });
-      const delivered = leads.filter((l) => l.status === "delivered");
-      const lost = leads.filter((l) => l.status === "lost");
-      const active = leads.filter((l) => ACTIVE_STATUSES.includes(l.status));
-      const fc = leads.map(firstContactDays).filter((d): d is number => d !== null);
+      const scoped = { ...filters, repId: rep.id, branchId: rep.branch_id };
+      const intake = filterLeads(data, scoped);
+      const lost = lostInRange(data, scoped);
+      const active = liveLeads(data, scoped);
+      const delivered = data.leads.filter(
+        (l) => l.assigned_to === rep.id && deliveredInRange(l, filters.range),
+      );
+      const closed = delivered.length + lost.length;
+      const fc = intake.map(firstContactDays).filter((d): d is number => d !== null);
       return {
         id: rep.id,
         name: rep.name,
         role: rep.role,
         branchId: rep.branch_id,
         branchName: branchById[rep.branch_id]?.name ?? "",
-        leads: leads.length,
+        leads: intake.length,
         delivered: delivered.length,
         lost: lost.length,
         active: active.length,
-        conversion: leads.length ? (delivered.length / leads.length) * 100 : 0,
+        conversion: closed ? (delivered.length / closed) * 100 : 0,
         avgFirstContact: avg(fc),
         deliveredRevenue: delivered.reduce((s, l) => s + l.deal_value, 0),
         pipelineValue: active.reduce((s, l) => s + l.deal_value, 0),
-        stalled: active.filter((l) => idleDays(l) >= STALL_DAYS).length,
+        stalled: active.filter((l) => idleDays(l) >= STALL_DAYS || isOverdueOrder(l)).length,
       };
     })
     .sort((a, b) => b.delivered - a.delivered);

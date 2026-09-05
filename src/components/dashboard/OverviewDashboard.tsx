@@ -84,12 +84,14 @@ export function OverviewDashboard() {
           />
         </section>
 
-        <section className="grid items-start gap-3 lg:grid-cols-5">
+        <section className="grid gap-3 lg:grid-cols-5 lg:items-stretch">
           <div className="min-w-0 lg:col-span-3">
             <BranchTable rows={branches} query={query} />
           </div>
-          <div className="min-w-0 lg:col-span-2">
-            <ActionQueue filters={filters} />
+          <div className="min-w-0 lg:relative lg:col-span-2 lg:min-h-0">
+            <div className="lg:absolute lg:inset-0 lg:overflow-hidden">
+              <ActionQueue filters={filters} />
+            </div>
           </div>
         </section>
 

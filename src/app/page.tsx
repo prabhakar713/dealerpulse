@@ -1,12 +1,6 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { DashboardSkeleton } from "@/components/ui/Skeleton";
-
-const OverviewDashboard = dynamic(
-  () => import("@/components/dashboard/OverviewDashboard").then((m) => m.OverviewDashboard),
-  { ssr: false, loading: () => <DashboardSkeleton /> },
-);
+import { OverviewDashboard } from "@/components/dashboard/OverviewDashboard";
 
 export default function Home() {
   return <OverviewDashboard />;
