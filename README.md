@@ -4,6 +4,8 @@ A performance dashboard for a 5-branch Toyota group. Built for the Forward Deplo
 
 The clock in this file is **31 Dec 2025** — the latest timestamp in `data/dealership_data.json`. There is no 2026 “today.”
 
+Live: [dealerpulse-blush.vercel.app](https://dealerpulse-blush.vercel.app)
+
 Repo: [github.com/prabhakar713/dealerpulse](https://github.com/prabhakar713/dealerpulse)
 
 ## What it does
@@ -34,7 +36,7 @@ npm run build
 npm start
 ```
 
-Deploy with `vercel --prod`. The assignment asks for a **live Vercel link** in the submission — that is the one remaining delivery item after this repo.
+Already live at [dealerpulse-blush.vercel.app](https://dealerpulse-blush.vercel.app). Redeploy with `vercel --prod`.
 
 ## Assignment coverage
 
@@ -47,7 +49,7 @@ Must-haves from `ASSIGNMENT.md`:
 - [x] Desktop and tablet (~768 and ~1024)
 - [x] Loading and empty states (managers, unknown ids, no intake in range)
 - [x] `DECISIONS.md` — product choices, tradeoffs, next, real numbers
-- [ ] Live Vercel URL (not deployed yet)
+- [x] Live Vercel URL — [dealerpulse-blush.vercel.app](https://dealerpulse-blush.vercel.app)
 
 Open-ended work that is in the product: lead aging, intake funnel + lost/delay reasons, target pace, branch/rep comparison, header search, copy-link, Light/Dark/Auto, sortable tables, CSV, print. Skipped: forecast intervals, what-if sliders, LLM blurbs, fake account chrome.
 
