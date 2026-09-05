@@ -11,6 +11,7 @@ import {
   deliveriesFor,
   filterLeads,
   liveLeads,
+  lostInRange,
   lostReasons,
   monthlyTrend,
   repSummaries,
@@ -19,10 +20,7 @@ import { dataset, getBranch } from "@/lib/data";
 import { formatINR, formatPct } from "@/lib/format";
 import { rangeParam, resolveRange } from "@/lib/query";
 import type { Filters } from "@/lib/types";
-import { AgingChart } from "../charts/AgingChart";
-import { FunnelChart } from "../charts/FunnelChart";
-import { ReasonBars } from "../charts/ReasonBars";
-import { TrendChart } from "../charts/TrendChart";
+import { AgingChart, FunnelChart, ReasonBars, TrendChart } from "../charts";
 import { ActionQueue } from "../insights/ActionQueue";
 import { Headline } from "../insights/Headline";
 import { AppShell } from "../ui/AppShell";
@@ -47,14 +45,15 @@ export function BranchDashboard({ branchId }: { branchId: string }) {
   const leads = useMemo(() => filterLeads(dataset, filters), [filters]);
   const reps = useMemo(() => repSummaries(dataset, filters), [filters]);
   const trend = useMemo(() => monthlyTrend(dataset, filters), [filters]);
-  const lost = useMemo(() => lostReasons(leads), [leads]);
+  const periodLost = useMemo(() => lostInRange(dataset, filters), [filters]);
+  const lost = useMemo(() => lostReasons(periodLost), [periodLost]);
   const delays = useMemo(() => delayReasons(deliveriesFor(dataset, filters)), [filters]);
   const openBook = useMemo(() => liveLeads(dataset, filters), [filters]);
   const aging = useMemo(() => agingBuckets(openBook), [openBook]);
 
   if (!branch) {
     return (
-      <AppShell>
+      <AppShell rangeValue={rangeParam(range)}>
         <EmptyState
           title="Branch not found"
           detail="That id is not in the dealership file."
@@ -69,7 +68,7 @@ export function BranchDashboard({ branchId }: { branchId: string }) {
   }
 
   return (
-    <AppShell scopeBranchId={branchId}>
+    <AppShell scopeBranchId={branchId} rangeValue={rangeParam(range)}>
       <div className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
@@ -115,16 +114,16 @@ export function BranchDashboard({ branchId }: { branchId: string }) {
         </section>
 
         <section className="grid gap-3 lg:grid-cols-5">
-          <div className="lg:col-span-3">
+          <div className="min-w-0 lg:col-span-3">
             <RepTable rows={reps} query={query} companyConv={kpis.conversion || group.conversion} />
           </div>
-          <div className="lg:col-span-2">
+          <div className="min-w-0 lg:col-span-2">
             <ActionQueue filters={filters} />
           </div>
         </section>
 
         <section className="grid gap-3 lg:grid-cols-2">
-          <FunnelChart leads={leads} />
+          <FunnelChart leads={leads} periodLabel={range.label} />
           <TrendChart points={trend} />
         </section>
 

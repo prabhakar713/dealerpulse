@@ -8,15 +8,22 @@ import { Card } from "../ui/Card";
 
 const COLORS = ["#7dd3c0", "#6ea8fe", "#c4b5fd", "#f5b942", "#fb923c", "#3ecf8e"];
 
-export function FunnelChart({ leads }: { leads: Lead[] }) {
+export function FunnelChart({
+  leads,
+  periodLabel,
+}: {
+  leads: Lead[];
+  periodLabel?: string;
+}) {
   const rows = funnel(leads);
   const drops = lostByPriorStage(leads);
   const neverContacted = drops.find((d) => d.stage === "new")?.count ?? 0;
   const lost = leads.filter((l) => l.status === "lost").length;
+  const scope = periodLabel ? `Of leads created in ${periodLabel}` : "Of leads created in this period";
   const soWhat =
     lost > 0 && neverContacted / lost >= 0.3
-      ? `${neverContacted} of ${lost} losses never got a first contact — the leak is at the top of the funnel.`
-      : `${rows[rows.length - 1]?.reached ?? 0} of ${rows[0]?.reached ?? 0} leads reached delivery.`;
+      ? `${scope}, ${neverContacted} of ${lost} losses never got a first contact — the leak is at the top.`
+      : `${scope}, ${rows[rows.length - 1]?.reached ?? 0} of ${rows[0]?.reached ?? 0} reached delivery.`;
 
   const data = rows.map((r) => ({
     name: statusLabel(r.stage),
@@ -25,7 +32,7 @@ export function FunnelChart({ leads }: { leads: Lead[] }) {
   }));
 
   return (
-    <Card title="Conversion funnel" soWhat={soWhat}>
+    <Card title="Intake funnel" soWhat={soWhat}>
       <div className="h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} layout="vertical" margin={{ left: 8, right: 12, top: 4, bottom: 0 }}>

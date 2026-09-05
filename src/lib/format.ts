@@ -12,13 +12,22 @@ export function formatINR(value: number): string {
     return `${sign}₹${trimNum(lakh)}L`;
   }
   if (abs >= 1_000) {
-    return `${sign}₹${Math.round(abs).toLocaleString("en-IN")}`;
+    return `${sign}₹${indianInt(abs)}`;
   }
   return `${sign}₹${Math.round(abs)}`;
 }
 
 export function formatINRFull(value: number): string {
-  return `₹${Math.round(value).toLocaleString("en-IN")}`;
+  return `₹${indianInt(value)}`;
+}
+
+function indianInt(value: number): string {
+  const digits = Math.round(Math.abs(value)).toString();
+  if (digits.length <= 3) return digits;
+  const last3 = digits.slice(-3);
+  const rest = digits.slice(0, -3);
+  const grouped = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ",");
+  return `${grouped},${last3}`;
 }
 
 function trimNum(n: number): string {

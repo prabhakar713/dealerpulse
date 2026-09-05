@@ -1,16 +1,19 @@
-import { Suspense } from "react";
-import { RepDashboard } from "@/components/dashboard/RepDashboard";
+"use client";
+
+import dynamic from "next/dynamic";
+import { use } from "react";
 import { DashboardSkeleton } from "@/components/ui/Skeleton";
 
-export default async function RepPage({
+const RepDashboard = dynamic(
+  () => import("@/components/dashboard/RepDashboard").then((m) => m.RepDashboard),
+  { ssr: false, loading: () => <DashboardSkeleton /> },
+);
+
+export default function RepPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-  return (
-    <Suspense fallback={<DashboardSkeleton />}>
-      <RepDashboard repId={id} />
-    </Suspense>
-  );
+  const { id } = use(params);
+  return <RepDashboard repId={id} />;
 }

@@ -10,6 +10,7 @@ import {
   deliveriesFor,
   filterLeads,
   liveLeads,
+  lostInRange,
   lostReasons,
   monthlyTrend,
   sourceConversion,
@@ -18,10 +19,7 @@ import { dataset } from "@/lib/data";
 import { formatINR, formatPct, sourceLabel } from "@/lib/format";
 import { rangeParam, resolveRange } from "@/lib/query";
 import type { Filters } from "@/lib/types";
-import { AgingChart } from "../charts/AgingChart";
-import { FunnelChart } from "../charts/FunnelChart";
-import { ReasonBars } from "../charts/ReasonBars";
-import { TrendChart } from "../charts/TrendChart";
+import { AgingChart, FunnelChart, ReasonBars, TrendChart } from "../charts";
 import { ActionQueue } from "../insights/ActionQueue";
 import { Headline } from "../insights/Headline";
 import { AppShell } from "../ui/AppShell";
@@ -38,17 +36,24 @@ export function OverviewDashboard() {
   const branches = useMemo(() => branchSummaries(dataset, filters), [filters]);
   const leads = useMemo(() => filterLeads(dataset, filters), [filters]);
   const trend = useMemo(() => monthlyTrend(dataset, filters), [filters]);
-  const lost = useMemo(() => lostReasons(leads), [leads]);
+  const periodLost = useMemo(() => lostInRange(dataset, filters), [filters]);
+  const lost = useMemo(() => lostReasons(periodLost), [periodLost]);
   const deliveries = useMemo(() => deliveriesFor(dataset, filters), [filters]);
   const delays = useMemo(() => delayReasons(deliveries), [deliveries]);
-  const sources = useMemo(() => sourceConversion(leads), [leads]);
+  const sources = useMemo(
+    () =>
+      sourceConversion(
+        dataset.leads.filter((l) => l.created_at <= filters.range.end),
+      ),
+    [filters],
+  );
   const openBook = useMemo(() => liveLeads(dataset, filters), [filters]);
   const aging = useMemo(() => agingBuckets(openBook), [openBook]);
   const bestSource = sources[0];
   const worstSource = sources[sources.length - 1];
 
   return (
-    <AppShell>
+    <AppShell rangeValue={rangeParam(range)}>
       <div className="space-y-4">
         <Headline filters={filters} />
 
@@ -80,16 +85,16 @@ export function OverviewDashboard() {
         </section>
 
         <section className="grid gap-3 lg:grid-cols-5">
-          <div className="lg:col-span-3">
+          <div className="min-w-0 lg:col-span-3">
             <BranchTable rows={branches} query={query} />
           </div>
-          <div className="lg:col-span-2">
+          <div className="min-w-0 lg:col-span-2">
             <ActionQueue filters={filters} />
           </div>
         </section>
 
         <section className="grid gap-3 lg:grid-cols-2">
-          <FunnelChart leads={leads} />
+          <FunnelChart leads={leads} periodLabel={range.label} />
           <TrendChart points={trend} />
         </section>
 
@@ -99,7 +104,7 @@ export function OverviewDashboard() {
             title="Why deals die"
             soWhat={
               lost[0]
-                ? `No single killer — ${lost[0].reason} leads (${lost[0].count}), but financing, price, and follow-up sit in a near-tie. Fix the process, not one objection.`
+                ? `${periodLost.length} losses closed in ${range.label}. Top reason: ${lost[0].reason} (${lost[0].count}). Financing, price, and follow-up sit in a near-tie — fix the process, not one objection.`
                 : "No losses in this slice."
             }
             rows={lost}
@@ -116,7 +121,7 @@ export function OverviewDashboard() {
             }
             rows={delays}
           />
-          <SourceStrip best={bestSource} worst={worstSource} />
+          <SourceStrip best={bestSource} worst={worstSource} periodLabel={range.label} />
         </section>
       </div>
     </AppShell>
@@ -126,15 +131,17 @@ export function OverviewDashboard() {
 function SourceStrip({
   best,
   worst,
+  periodLabel,
 }: {
   best?: { source: string; conversion: number; leads: number };
   worst?: { source: string; conversion: number; leads: number };
+  periodLabel: string;
 }) {
   return (
     <section className="card p-4 sm:p-5">
       <h2 className="text-sm font-semibold text-ink">Which source is worth the spend?</h2>
       <p className="mt-1 text-xs leading-5 text-muted">
-        Walk-ins reliably outperform paid attention. If social stays this weak, stop feeding it unqualified leads.
+        Conversion through {periodLabel} (full book to date, not one month of intake). Walk-ins hold up; weak digital sources do not.
       </p>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div className="rounded-xl bg-good/10 p-3">

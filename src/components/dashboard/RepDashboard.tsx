@@ -14,8 +14,7 @@ import { dataset, getBranch, getRep } from "@/lib/data";
 import { formatDays, formatINR, formatPct } from "@/lib/format";
 import { rangeParam, resolveRange } from "@/lib/query";
 import type { Filters } from "@/lib/types";
-import { FunnelChart } from "../charts/FunnelChart";
-import { ReasonBars } from "../charts/ReasonBars";
+import { FunnelChart, ReasonBars } from "../charts";
 import { ActionQueue } from "../insights/ActionQueue";
 import { AppShell } from "../ui/AppShell";
 import { EmptyState } from "../ui/EmptyState";
@@ -45,7 +44,7 @@ export function RepDashboard({ repId }: { repId: string }) {
 
   if (!rep || !branch) {
     return (
-      <AppShell>
+      <AppShell rangeValue={rangeParam(range)}>
         <EmptyState
           title="Rep not found"
           detail="That sales rep id is not in the file."
@@ -62,7 +61,7 @@ export function RepDashboard({ repId }: { repId: string }) {
   const isManager = rep.role === "branch_manager";
 
   return (
-    <AppShell scopeBranchId={rep.branch_id}>
+    <AppShell scopeBranchId={rep.branch_id} rangeValue={rangeParam(range)}>
       <div className="space-y-4">
         <div>
           <div className="flex flex-wrap gap-3 text-xs text-muted">
@@ -135,7 +134,7 @@ export function RepDashboard({ repId }: { repId: string }) {
               </div>
             </section>
 
-            <FunnelChart leads={leads} />
+            <FunnelChart leads={leads} periodLabel={range.label} />
 
             <ReasonBars
               title="This rep's lost reasons"

@@ -26,7 +26,7 @@ export function ReasonBars({
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} layout="vertical" margin={{ left: 8, right: 12, top: 4, bottom: 0 }}>
               <XAxis type="number" hide />
-              <YAxis type="category" dataKey="name" width={128} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="name" width={110} tickLine={false} axisLine={false} />
               <Tooltip
                 contentStyle={{ background: "#12151c", border: "1px solid #262c38", borderRadius: 12 }}
               />

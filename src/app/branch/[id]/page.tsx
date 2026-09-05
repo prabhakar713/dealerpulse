@@ -1,16 +1,19 @@
-import { Suspense } from "react";
-import { BranchDashboard } from "@/components/dashboard/BranchDashboard";
+"use client";
+
+import dynamic from "next/dynamic";
+import { use } from "react";
 import { DashboardSkeleton } from "@/components/ui/Skeleton";
 
-export default async function BranchPage({
+const BranchDashboard = dynamic(
+  () => import("@/components/dashboard/BranchDashboard").then((m) => m.BranchDashboard),
+  { ssr: false, loading: () => <DashboardSkeleton /> },
+);
+
+export default function BranchPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-  return (
-    <Suspense fallback={<DashboardSkeleton />}>
-      <BranchDashboard branchId={id} />
-    </Suspense>
-  );
+  const { id } = use(params);
+  return <BranchDashboard branchId={id} />;
 }

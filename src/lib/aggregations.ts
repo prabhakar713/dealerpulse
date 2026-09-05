@@ -487,7 +487,10 @@ export function companyKpis(data: DealershipData, filters: Filters) {
   };
 }
 
-export function actionableInsights(data: DealershipData, filters: Filters): ActionItem[] {
+export function actionableInsights(
+  data: DealershipData,
+  filters: Filters,
+): { items: ActionItem[]; total: number } {
   const items: ActionItem[] = [];
   const leads = liveLeads(data, filters);
 
@@ -575,7 +578,8 @@ export function actionableInsights(data: DealershipData, filters: Filters): Acti
   }
 
   const severityRank = { critical: 0, high: 1, medium: 2 };
-  return items.sort((a, b) => severityRank[a.severity] - severityRank[b.severity]).slice(0, 12);
+  const ranked = items.sort((a, b) => severityRank[a.severity] - severityRank[b.severity]);
+  return { items: ranked.slice(0, 12), total: ranked.length };
 }
 
 function prettyStatus(status: LeadStatus): string {
@@ -585,7 +589,7 @@ function prettyStatus(status: LeadStatus): string {
 function formatDeal(value: number): string {
   if (value >= 10_000_000) return `₹${(value / 10_000_000).toFixed(2)} Cr`;
   if (value >= 100_000) return `₹${(value / 100_000).toFixed(1)}L`;
-  return `₹${value.toLocaleString("en-IN")}`;
+  return `₹${Math.round(value)}`;
 }
 
 function suggestedNextStep(lead: Lead): string {

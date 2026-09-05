@@ -1,33 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { actionableInsights } from "@/lib/aggregations";
 import { dataset } from "@/lib/data";
+import { rangeParam } from "@/lib/query";
 import type { Filters } from "@/lib/types";
 import { Card } from "../ui/Card";
 import { EmptyState } from "../ui/EmptyState";
 import { SeverityPill } from "../ui/StatusPill";
 
 export function ActionQueue({ filters }: { filters: Filters }) {
-  const params = useSearchParams();
-  const range = params.get("range") ?? "2025-12";
+  const range = rangeParam(filters.range);
   const withRange = (href?: string) =>
     href ? `${href}${href.includes("?") ? "&" : "?"}range=${range}` : undefined;
-  const items = actionableInsights(dataset, filters);
+  const { items, total } = actionableInsights(dataset, filters);
   const soWhat = items.length
-    ? `${items.length} named actions — call, chase delivery, or coach. Not a chart.`
-    : "No stalled leads or missed-target branches in this slice.";
+    ? `Showing ${items.length} of ${total} live actions — call, chase delivery, or coach.`
+    : "No stalled leads or missed-target branches in this view.";
 
   return (
     <Card title="Do this today" soWhat={soWhat}>
       {items.length === 0 ? (
         <EmptyState
-          title="Queue is clear for this filter"
-          detail="Try a wider date range, or switch to CEO view to see group-wide follow-ups."
+          title="Queue is clear"
+          detail="No overdue orders, stalled mid-funnel leads, or missed-target branches to act on."
         />
       ) : (
-        <ol className="space-y-3">
+        <ol className="max-h-[36rem] space-y-3 overflow-y-auto pr-1">
           {items.map((item) => (
             <li key={item.id} className="rounded-xl border border-line bg-soft/50 p-3">
               <div className="flex items-start justify-between gap-2">
