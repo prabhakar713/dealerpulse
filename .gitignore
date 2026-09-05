@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Next.js local agent stubs — not part of the product
+AGENTS.md
+CLAUDE.md
+/scripts
